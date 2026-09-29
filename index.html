@@ -1863,10 +1863,40 @@ footer{padding:40px 0!important}
   modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});
   document.addEventListener('keydown',e=>{if(e.key==='Escape' && modal.classList.contains('open'))closeModal()});
 
-  document.getElementById('leadForm').addEventListener('submit',function(e){
+  const WEBHOOK_URL='https://agencia-firma-n8n.ew0aju.easypanel.host/webhook/aaddf315-a263-46ca-9639-bfae9475df77';
+
+  document.getElementById('leadForm').addEventListener('submit',async function(e){
     e.preventDefault();
-    alert('Inscrição registrada! Conecte este formulário ao seu sistema de leads.');
-    closeModal();
+    const form=this;
+    const btn=form.querySelector('button[type="submit"]');
+    const btnText=btn.textContent;
+    const payload={
+      'Nome':form.nome.value.trim(),
+      'Empresa':'',
+      'CNPJ':'',
+      'Telefone':form.whatsapp.value.trim(),
+      'E-mail':form.email.value.trim(),
+      'pagina':'Aula Gratuita'
+    };
+    btn.disabled=true;
+    btn.textContent='ENVIANDO...';
+    try{
+      const res=await fetch(WEBHOOK_URL,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      alert('Inscrição registrada! Em breve você receberá as informações da aula.');
+      form.reset();
+      closeModal();
+    }catch(err){
+      console.error(err);
+      alert('Não foi possível enviar sua inscrição. Tente novamente em instantes.');
+    }finally{
+      btn.disabled=false;
+      btn.textContent=btnText;
+    }
   });
 
   const observer=new IntersectionObserver(entries=>{
