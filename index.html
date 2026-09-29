@@ -1864,6 +1864,7 @@ footer{padding:40px 0!important}
   document.addEventListener('keydown',e=>{if(e.key==='Escape' && modal.classList.contains('open'))closeModal()});
 
   const WEBHOOK_URL='https://agencia-firma-n8n.ew0aju.easypanel.host/webhook/aaddf315-a263-46ca-9639-bfae9475df77';
+  const REDIRECT_URL='https://chat.whatsapp.com/Lkrirr3TEsJHv34lcVLz8k';
 
   document.getElementById('leadForm').addEventListener('submit',async function(e){
     e.preventDefault();
@@ -1887,13 +1888,10 @@ footer{padding:40px 0!important}
         body:JSON.stringify(payload)
       });
       if(!res.ok) throw new Error('HTTP '+res.status);
-      alert('Inscrição registrada! Em breve você receberá as informações da aula.');
-      form.reset();
-      closeModal();
+      window.location.href=REDIRECT_URL;
     }catch(err){
       console.error(err);
       alert('Não foi possível enviar sua inscrição. Tente novamente em instantes.');
-    }finally{
       btn.disabled=false;
       btn.textContent=btnText;
     }
